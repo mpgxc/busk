@@ -19,7 +19,7 @@ test:             ## testes unitários
 	go test ./...
 
 test-integration: ## inclui o teste ponta a ponta (APAGA o schema do TEST_DATABASE_URL)
-	TEST_DATABASE_URL="$(TEST_DATABASE_URL)" go test -race -count=1 ./...
+	TEST_DATABASE_URL="$(TEST_DATABASE_URL)" go test -p 1 -race -count=1 ./...   # -p 1: os testes de integração compartilham o banco
 
 lint:
 	gofmt -l .

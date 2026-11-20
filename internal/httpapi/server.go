@@ -8,6 +8,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"io/fs"
+	"log/slog"
 	"net"
 	"net/http"
 	"strconv"
@@ -232,9 +233,9 @@ func (s *Server) redirectToStore(w http.ResponseWriter, r *http.Request) {
 		uid = &v
 	}
 	// Não guardamos o IP em claro (LGPD): só um hash para deduplicar cliques.
+	// Falhar em gravar o clique não pode impedir o usuário de chegar na loja.
 	if err := s.catalog.RecordClick(r.Context(), id, uid, hashIP(r.RemoteAddr), r.UserAgent(), r.Referer()); err != nil {
-		internalError(w, r, err) // não bloquear o usuário seria aceitável; aqui preferimos saber
-		return
+		slog.WarnContext(r.Context(), "registrar clique", "offer_id", id, "err", err)
 	}
 	w.Header().Set("Cache-Control", "no-store")
 	http.Redirect(w, r, url, http.StatusFound)

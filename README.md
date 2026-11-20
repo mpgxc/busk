@@ -11,6 +11,12 @@ Comparador de preços: as lojas parceiras enviam o feed de ofertas, e o site mos
 ### Com Docker
 
 ```bash
+cp .env.example .env
+```
+
+Edite o `.env` e troque `POSTGRES_PASSWORD`, `JWT_SECRET` e `ADMIN_TOKEN`. O compose recusa subir se alguma estiver vazia, e a API recusa os valores de exemplo.
+
+```bash
 docker compose up -d --build
 ```
 

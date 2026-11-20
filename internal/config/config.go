@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -35,16 +36,29 @@ func Load() (Config, error) {
 		StaleOfferAfter:    envDuration("STALE_OFFER_AFTER", 72*time.Hour),
 		RateLimitPerSecond: envFloat("RATE_LIMIT_RPS", 20),
 		RateLimitBurst:     envInt("RATE_LIMIT_BURST", 40),
-		CORSOrigins:        env("CORS_ORIGINS", "*"),
+		CORSOrigins:        env("CORS_ORIGINS", ""),
 		TrustProxy:         os.Getenv("TRUST_PROXY") == "true",
 	}
-	if len(c.JWTSecret) < 32 {
-		return c, fmt.Errorf("JWT_SECRET precisa ter pelo menos 32 caracteres")
+	if err := checkSecret("JWT_SECRET", c.JWTSecret, 32); err != nil {
+		return c, err
 	}
-	if c.AdminToken == "" {
-		return c, fmt.Errorf("ADMIN_TOKEN é obrigatório")
+	if err := checkSecret("ADMIN_TOKEN", c.AdminToken, 16); err != nil {
+		return c, err
 	}
 	return c, nil
+}
+
+// checkSecret recusa segredos vazios, curtos ou copiados do .env.example.
+func checkSecret(name, v string, min int) error {
+	switch {
+	case v == "":
+		return fmt.Errorf("%s é obrigatório", name)
+	case len(v) < min:
+		return fmt.Errorf("%s precisa ter pelo menos %d caracteres", name, min)
+	case strings.HasPrefix(strings.ToLower(v), "troque") || v == "admin-dev":
+		return fmt.Errorf("%s ainda está com valor de exemplo; gere um novo", name)
+	}
+	return nil
 }
 
 func env(k, def string) string {
