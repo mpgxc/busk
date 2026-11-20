@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Comparaí — compare preços</title>
+  <meta name="description" content="Compare preços de produtos em várias lojas, veja o histórico e crie alertas de preço.">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <a href="/" class="logo" data-link>compar<span>aí</span></a>
+      <form class="search" id="search-form" role="search" autocomplete="off">
+        <input id="search-input" type="search" name="q" placeholder="Busque produtos, marcas, categorias…" aria-label="Buscar produtos">
+        <button type="submit">Buscar</button>
+        <ul id="suggest" class="suggest" role="listbox" hidden></ul>
+      </form>
+      <nav class="account" id="account-nav"></nav>
+    </div>
+  </header>
+  <main id="app" class="wrap" tabindex="-1"></main>
+  <footer class="wrap footer">
+    Comparaí · preços informados pelas lojas parceiras e podem mudar sem aviso.
+  </footer>
+  <script src="/app.js" type="module"></script>
+</body>
+</html>
